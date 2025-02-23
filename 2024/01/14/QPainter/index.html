@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha256-/4UQcSmErDzPCMAiuOiWPVVsNN2s3ZY/NsmXNcj0IFc=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"gravelgalaxy.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.15.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="绘图设备常见的有QWidget, QPixmap, QImage等(QWidget类及其子类是最常用的绘图设备)，作用是给QPainter提供一个“画布”。 坐标系统物理坐标逻辑坐标viewport坐标: 物理坐标的一个矩形区域。默认是整个Widget。window坐标: 当实际绘图设备发生变化时，绘制的图形会自动变化大小。将viewport坐标用凭空给定的坐标替代, 不必知道viewport的大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QPainter">
+<meta property="og:url" content="https://gravelgalaxy.github.io/2024/01/14/QPainter/index.html">
+<meta property="og:site_name" content="Gravel Galaxy">
+<meta property="og:description" content="绘图设备常见的有QWidget, QPixmap, QImage等(QWidget类及其子类是最常用的绘图设备)，作用是给QPainter提供一个“画布”。 坐标系统物理坐标逻辑坐标viewport坐标: 物理坐标的一个矩形区域。默认是整个Widget。window坐标: 当实际绘图设备发生变化时，绘制的图形会自动变化大小。将viewport坐标用凭空给定的坐标替代, 不必知道viewport的大">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-14T01:27:03.000Z">
+<meta property="article:modified_time" content="2024-01-14T04:14:22.848Z">
+<meta property="article:author" content="gravelGalaxy">
+<meta property="article:tag" content="Qt">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://gravelgalaxy.github.io/2024/01/14/QPainter/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://gravelgalaxy.github.io/2024/01/14/QPainter/","path":"2024/01/14/QPainter/","title":"QPainter"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>QPainter | Gravel Galaxy</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Gravel Galaxy</p>
+      <i class="logo-line"></i>
+    </a>
+      <img class="custom-logo-image" src="/uploads/gravelgalaxy.png" alt="Gravel Galaxy">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%98%E5%9B%BE%E8%AE%BE%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">绘图设备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9D%90%E6%A0%87%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.</span> <span class="nav-text">坐标系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%9D%90%E6%A0%87"><span class="nav-number">2.1.</span> <span class="nav-text">物理坐标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E5%9D%90%E6%A0%87"><span class="nav-number">2.2.</span> <span class="nav-text">逻辑坐标</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%9A%E8%BF%87QPainter%E5%9C%A8%E7%BB%98%E5%9B%BE%E8%AE%BE%E5%A4%87%E4%B8%8A%E7%94%BB%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">通过QPainter在绘图设备上画图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E5%9F%BA%E6%9C%AC%E5%9B%BE%E5%BD%A2%E5%85%83%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">绘制基本图形元件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2"><span class="nav-number">5.</span> <span class="nav-text">坐标变换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Questions"><span class="nav-number">6.</span> <span class="nav-text">Questions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88QGradient%E5%AD%90%E7%B1%BB%E5%8F%AF%E4%BB%A5%E4%BD%9C%E4%B8%BAQBrush%E4%BC%A0%E9%80%92%E7%BB%99QPainter%EF%BC%9F"><span class="nav-number">6.0.1.</span> <span class="nav-text">为什么QGradient子类可以作为QBrush传递给QPainter？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88QPainter-QBrush-QPen%E8%BF%99%E4%BA%9B%E5%AF%B9%E8%B1%A1%E4%BF%9D%E5%AD%98%E5%88%B0%E6%A0%88%E4%B8%AD%EF%BC%8C%E8%80%8C%E9%9D%9E%E5%A0%86%E4%B8%AD%EF%BC%9F"><span class="nav-number">6.0.2.</span> <span class="nav-text">为什么QPainter,QBrush,QPen这些对象保存到栈中，而非堆中？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B7%E5%BC%8F"><span class="nav-number">7.</span> <span class="nav-text">样式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%9D%A1%E6%A0%B7%E5%BC%8F"><span class="nav-number">7.1.</span> <span class="nav-text">线条样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%9D%A1%E7%AB%AF%E7%82%B9%E6%A0%B7%E5%BC%8F"><span class="nav-number">7.2.</span> <span class="nav-text">线条端点样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%9D%A1%E8%BF%9E%E6%8E%A5%E6%A0%B7%E5%BC%8F"><span class="nav-number">7.3.</span> <span class="nav-text">线条连接样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%BB%E5%88%B7%E6%A0%B7%E5%BC%8F"><span class="nav-number">7.4.</span> <span class="nav-text">画刷样式</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">gravelGalaxy</p>
+  <div class="site-description" itemprop="description">燕山大学</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://gravelgalaxy.github.io/2024/01/14/QPainter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="gravelGalaxy">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gravel Galaxy">
+      <meta itemprop="description" content="燕山大学">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="QPainter | Gravel Galaxy">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          QPainter
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-01-14 09:27:03 / 修改时间：12:14:22" itemprop="dateCreated datePublished" datetime="2024-01-14T09:27:03+08:00">2024-01-14</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="绘图设备"><a href="#绘图设备" class="headerlink" title="绘图设备"></a>绘图设备</h1><p>常见的有QWidget, QPixmap, QImage等(QWidget类及其子类是最常用的绘图设备)，作用是给QPainter提供一个“画布”。</p>
+<h1 id="坐标系统"><a href="#坐标系统" class="headerlink" title="坐标系统"></a>坐标系统</h1><h2 id="物理坐标"><a href="#物理坐标" class="headerlink" title="物理坐标"></a>物理坐标</h2><h2 id="逻辑坐标"><a href="#逻辑坐标" class="headerlink" title="逻辑坐标"></a>逻辑坐标</h2><p>viewport坐标: 物理坐标的一个矩形区域。默认是整个Widget。<br>window坐标: 当实际绘图设备发生变化时，绘制的图形会自动变化大小。将viewport坐标用凭空给定的坐标<code>替代</code>, 不必知道viewport的大小。</p>
+<h1 id="通过QPainter在绘图设备上画图"><a href="#通过QPainter在绘图设备上画图" class="headerlink" title="通过QPainter在绘图设备上画图"></a>通过QPainter在绘图设备上画图</h1><p>QWidget类及其子类有paintEvent()事件，重写此事件的相应代码即可在设备上绘图。其基本结构如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">void Widget::paintEvent(QPainterEvent *event)</span><br><span class="line">&#123;</span><br><span class="line">	QPainter painter(this);// 创建与绘图设备相关联的QPainter</span><br><span class="line">	//painter 在设备的窗口上绘图</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>绘图时，会用到QPainter的3个属性：</p>
+<ol>
+<li>pen:QPen对象，设置线条的颜色、宽度、线型。</li>
+<li>brush:QBrush对象，设置区域的填充颜色、填充方式、渐变等。</li>
+<li>font:QFont对象，设置文字的字体、大小等。</li>
+</ol>
+<p>可以在Qt中新建一个QWidget项目，并在头文件中声明对paintEvent的重写，在源文件中实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">void Widget::paintEvent(QPaintEvent *event)</span><br><span class="line">&#123;</span><br><span class="line">    QPainter painter(this);</span><br><span class="line">    QPen pen;</span><br><span class="line">    QBrush brush;</span><br><span class="line"></span><br><span class="line">    painter.setRenderHint(QPainter::Antialiasing);</span><br><span class="line">    painter.setRenderHint(QPainter::TextAntialiasing);</span><br><span class="line"></span><br><span class="line">    // 要绘制的形状。通过QPainter进行绘制，但在绘制前应设置QPainter的pen和brush属性。</span><br><span class="line">    int w = this-&gt;width();</span><br><span class="line">    int h = this-&gt;height();</span><br><span class="line">    QRect rect(w / 4, h / 4, w / 2, h / 2);</span><br><span class="line"></span><br><span class="line">    // 设置pen</span><br><span class="line">    pen.setWidth(3);</span><br><span class="line">    pen.setColor(Qt::green);</span><br><span class="line">    pen.setStyle(Qt::SolidLine);	// 设置线条样式</span><br><span class="line">    pen.setCapStyle(Qt::FlatCap);	// 设置线条端点样式</span><br><span class="line">    pen.setJoinStyle(Qt::BevelJoin);	// 设置连接样式</span><br><span class="line">    painter.setPen(pen);</span><br><span class="line"></span><br><span class="line">    // 设置brush</span><br><span class="line">    brush.setColor(Qt::gray);</span><br><span class="line">    brush.setStyle(Qt::SolidPattern);</span><br><span class="line">    painter.setBrush(brush);</span><br><span class="line"></span><br><span class="line">    // 绘图</span><br><span class="line">    painter.drawRect(rect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="绘制基本图形元件"><a href="#绘制基本图形元件" class="headerlink" title="绘制基本图形元件"></a>绘制基本图形元件</h1><p>在绘制图形元件时，不可避免的要进行数字计算。例如当我们要绘制一个五角星时，该怎样得到五角星每个顶点的坐标呢？</p>
+<ol>
+<li>首先我们将五角星放到圆内，那么圆心就是五角星的中心。我们假设五角星的某个点与圆心之间的连线是x轴，逆时针旋转90度的为y轴。因为圆心与五角星的五个顶点之间的连线将圆分成了5份，那么每一份的角度是72度。因此，其他的点的坐标就可以通过sin和cos计算出来。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">void Widget::paintEvent(QPaintEvent *event) </span><br><span class="line">&#123;</span><br><span class="line">	QPainter painter(this);</span><br><span class="line">	</span><br><span class="line">	qreal r = 100;</span><br><span class="line">	const qreal pi = 3.14159;</span><br><span class="line">	qreal deg = pi * 72 / 180;</span><br><span class="line">	QPoint points[5] = &#123;</span><br><span class="line">		QPoint(r, 0);</span><br><span class="line">		QPoint(r * std::cos(deg), r * std::sin(deg));</span><br><span class="line">		QPoint(r * std::cos(2 * deg), r * std::sin(2 * deg));</span><br><span class="line">		QPoint(r * std::cos(3 * deg), r * std::sin(3 * deg));</span><br><span class="line">		QPoint(r * std::cos(4 * deg), r * std::sin(4 * deg));</span><br><span class="line">	&#125;;</span><br><span class="line">	</span><br><span class="line">	QPen pen;</span><br><span class="line">	pen.setColor(Qt::blue);</span><br><span class="line">	pen.setStyle(Qt::SolidLine);</span><br><span class="line">	pen.setCapStyle(Qt::FlatCap);</span><br><span class="line">	pen.setJoinStyle(Qt::BevelJoin);</span><br><span class="line">	painter.setPen(pen);</span><br><span class="line">	</span><br><span class="line">	QPainterPath starPath;</span><br><span class="line">	starPath.moveTo(points[0]);</span><br><span class="line">	starPath.moveTo(points[2]);</span><br><span class="line">	starPath.moveTo(points[4]);</span><br><span class="line">	starPath.moveTo(points[1]);</span><br><span class="line">	starPath.moveTo(points[3]);</span><br><span class="line">	starPath.closeSubpath();	//闭合路径</span><br><span class="line"></span><br><span class="line">	painter.save();</span><br><span class="line">	painter.translate(100, 120);</span><br><span class="line">	painter.drawPath(starPath);</span><br><span class="line">	painter.restore();</span><br><span class="line">	</span><br><span class="line">	painter.translate(300, 120);</span><br><span class="line">	painter.scale(0.8, 0.8);</span><br><span class="line">	painter.rotate(90);</span><br><span class="line">	painter.drawPath(starPath);</span><br><span class="line">	painter.restore();</span><br><span class="line">	</span><br><span class="line">	painter.resetTransform();</span><br><span class="line">	painter.translate(500, 120);</span><br><span class="line">	painter.rotate(-145);</span><br><span class="line">	painter.drawPath(starPath);</span><br><span class="line">&#125;</span><br><span class="line">	</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="坐标变换"><a href="#坐标变换" class="headerlink" title="坐标变换"></a>坐标变换</h1><p>逻辑坐标系统：你可以决定绘图设备上的某个点作为原点，以此原点建立的坐标系是逻辑坐标。</p>
+<ol>
+<li>translate(qreal dx, qreal dy):将原点通过dx和dy<code>偏移量</code>移动到新的点。</li>
+<li>rotate(qreal angle):坐标系统顺时针旋转angle角度。</li>
+<li>scale(qreal sx, qreal sy):坐标系统缩放。</li>
+<li>resetTransform():复位所有的坐标变换。</li>
+<li>save():将painter当前状态压入堆栈。</li>
+<li>restore():从堆栈中恢复上一次的状态。</li>
+</ol>
+<h1 id="Questions"><a href="#Questions" class="headerlink" title="Questions"></a>Questions</h1><h3 id="为什么QGradient子类可以作为QBrush传递给QPainter？"><a href="#为什么QGradient子类可以作为QBrush传递给QPainter？" class="headerlink" title="为什么QGradient子类可以作为QBrush传递给QPainter？"></a>为什么QGradient子类可以作为QBrush传递给QPainter？</h3><p>因为QBrush中包含构造函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QBrush(const QGradient &amp;gradient);</span><br></pre></td></tr></table></figure>
+<p>所以，当给painter.setBrush(gradient)时，会自动将gradient构造成QBrush对象。</p>
+<h3 id="为什么QPainter-QBrush-QPen这些对象保存到栈中，而非堆中？"><a href="#为什么QPainter-QBrush-QPen这些对象保存到栈中，而非堆中？" class="headerlink" title="为什么QPainter,QBrush,QPen这些对象保存到栈中，而非堆中？"></a>为什么QPainter,QBrush,QPen这些对象保存到栈中，而非堆中？</h3><p>因为Qt通过使用画布上的像素点来表现图形，将图像保存到绘图设备上，直到该绘图设备被销毁或者图形被重新绘制。</p>
+<h1 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h1><h2 id="线条样式"><a href="#线条样式" class="headerlink" title="线条样式"></a>线条样式</h2><ol>
+<li>Qt::SolidLine</li>
+<li>Qt::DashLine</li>
+<li>Qt::DotLine</li>
+<li>Qt::DashDotLine</li>
+<li>Qt::DashDotDotLine</li>
+<li>Qt::CustomDashLine</li>
+</ol>
+<h2 id="线条端点样式"><a href="#线条端点样式" class="headerlink" title="线条端点样式"></a>线条端点样式</h2><ol>
+<li>Qt::SquareCap	&#x2F;&#x2F; 线条端点是矩形棱角，端点是方正的</li>
+<li>Qt::FlatCap		&#x2F;&#x2F; 线条断点也是棱角，但是是倾斜的。</li>
+<li>Qt::RoundCap		&#x2F;&#x2F; 线条断点是圆角</li>
+</ol>
+<h2 id="线条连接样式"><a href="#线条连接样式" class="headerlink" title="线条连接样式"></a>线条连接样式</h2><ol>
+<li>Qt::BevelJoin	&#x2F;&#x2F; 线条连接部分有棱角，但是不是尖锐的。</li>
+<li>Qt::MiterJoin	&#x2F;&#x2F; 线条连接部分有棱角，并且是尖锐的。</li>
+<li>Qt::RoundJoin	&#x2F;&#x2F; 线条连接部分是圆角。</li>
+</ol>
+<h2 id="画刷样式"><a href="#画刷样式" class="headerlink" title="画刷样式"></a>画刷样式</h2><ol>
+<li>Qt::NoBrush			&#x2F;&#x2F; 无填充</li>
+<li>Qt::SolidPattern		&#x2F;&#x2F; 单一颜色填充</li>
+<li>Qt::HorPattern		&#x2F;&#x2F; 水平线填充</li>
+<li>Qt::VerPattern		&#x2F;&#x2F; 垂直线填充</li>
+<li>Qt::LinearGradientPattern	&#x2F;&#x2F; 线性渐变</li>
+<li>Qt::RadialGradientPattern	&#x2F;&#x2F; 辐射渐变</li>
+<li>Qt::ConicalGradientPattern	&#x2F;&#x2F; 圆锥形渐变</li>
+<li>Qt::TexturePattern		&#x2F;&#x2F; 材质填充</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Qt/" rel="tag"># Qt</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/05/12/mergesort/" rel="prev" title="归并排序">
+                  <i class="fa fa-chevron-left"></i> 归并排序
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/01/14/bugs/" rel="next" title="Bugs">
+                  Bugs <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gravelGalaxy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
